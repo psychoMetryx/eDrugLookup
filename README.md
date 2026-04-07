@@ -2,6 +2,10 @@
 
 Extension Chromium Manifest V3 ini menambahkan drug lookup assistive ke halaman `https://emr.eclinic.id/pemeriksaanmedis/show/*`, khususnya untuk workflow resep `Non Racik`. Extension aman dipakai untuk mencari alias obat dari katalog internal, menampilkan prioritas payer pasien, dan membantu resolve ke inventory obat live di EMR. Extension ini sengaja tidak menekan `Tambahkan Obat`, tidak menekan `Simpan`, dan tidak melakukan submit resep otomatis.
 
+## Preview
+
+![Modal lookup preview](./docs/assets/modal-preview.png)
+
 ## Fitur Saat Ini
 
 - Lookup lokal dari [LIST OBAT 2026.csv](./LIST%20OBAT%202026.csv)
