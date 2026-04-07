@@ -110,7 +110,8 @@ describe('suggestion badges', () => {
       disambiguation: null,
       layout: 'modal',
       payer: 'umum',
-      showPayerBadge: true
+      showPayerBadge: true,
+      nativeMode: false
     });
 
     const host = document.querySelector('[data-edrug-lookup="host"]') as HTMLElement & { shadowRoot: ShadowRoot };
