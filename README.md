@@ -72,6 +72,7 @@ Lalu buka `chrome://extensions`, aktifkan `Developer mode`, klik `Load unpacked`
 - [FAQ singkat](./docs/faq.md)
 - [Customize Your Drug List](./docs/customize-catalog.md)
 - [Release notes](./CHANGELOG.md)
+- [Release hygiene (sanitasi katalog)](./docs/release-hygiene.md)
 
 ## Cara Menjalankan
 
@@ -107,6 +108,14 @@ Kalau ada perubahan code, lakukan:
 ```bash
 npm test
 ```
+
+### Menjalankan pemeriksaan sanitasi katalog
+
+```bash
+npm run check:catalog-sanitization
+```
+
+Command ini dipakai sebagai gate pre-commit dan CI untuk mencegah konten non-template pada CSV/generate catalog.
 
 ### Development loop
 
