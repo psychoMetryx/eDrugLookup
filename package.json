@@ -1,0 +1,29 @@
+{
+  "name": "edruglookup",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:catalog": "tsx scripts/buildCatalog.ts",
+    "predev": "npm run build:catalog",
+    "prebuild": "npm run build:catalog",
+    "pretest": "npm run build:catalog",
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@crxjs/vite-plugin": "^2.2.0"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.1.24",
+    "@types/node": "^24.0.0",
+    "jsdom": "^26.1.0",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
+    "vitest": "^3.1.4"
+  }
+}
