@@ -210,7 +210,7 @@ describe('drug lookup controller', () => {
       .filter(([actionName]) => actionName === 'searchModalInventory')
       .map(([, payload]) => (payload as { term: string }).term);
 
-    expect(searchTerms[0]).toBe('PACDIN SYR');
+    expect(searchTerms[0]).toBe('pacd');
     expect(searchTerms).not.toContain('PACDIN SYR,LIBEBI SYR');
     controller.stop();
   });

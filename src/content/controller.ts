@@ -2,6 +2,7 @@ import { catalogEntries } from '../generated/catalog';
 import { buildCandidateTerms, resolveInventoryMatch } from '../lib/catalog/resolve';
 import { searchCatalog } from '../lib/catalog/search';
 import type {
+  CatalogEntry,
   CatalogSearchResult,
   InventoryOption,
   PayerInference,
@@ -42,6 +43,7 @@ export class DrugLookupController {
   private lastQuery = '';
   private queryVersion = 0;
   private payerInfo: PayerInference = inferPatientPayerInfo();
+  private nativeMode = false;
 
   constructor(dependencies: ControllerDependencies = {}) {
     this.bridge = dependencies.bridge ?? new PageBridgeClient();
@@ -177,8 +179,17 @@ export class DrugLookupController {
 
     const trimmedQuery = query.trim();
     if (!trimmedQuery) {
+      this.nativeMode = false;
       this.render({
         message: 'Type a generic or brand name to search the bundled drug catalog.'
+      });
+      return;
+    }
+
+    if (!this.isCatalogUsable()) {
+      this.nativeMode = true;
+      this.render({
+        message: 'Local catalog is unavailable. Continuing with native search mode.'
       });
       return;
     }
@@ -189,12 +200,17 @@ export class DrugLookupController {
     });
 
     if (!results.length) {
-      this.render({
-        message: 'No catalog match found for this query.'
-      });
+      this.nativeMode = true;
+      const fallbackResult = this.buildNativeFallbackResult(trimmedQuery);
+      this.resultsById.set(fallbackResult.alias.id, fallbackResult);
+      this.render({ suggestions: [fallbackResult] });
+      if (this.availability.context?.mode !== 'modal-cari-obat') {
+        void this.refreshResolutionStatuses([fallbackResult], version);
+      }
       return;
     }
 
+    this.nativeMode = false;
     this.render({ suggestions: results });
     if (this.availability.context?.mode !== 'modal-cari-obat') {
       void this.refreshResolutionStatuses(results.slice(0, 5), version);
@@ -286,12 +302,7 @@ export class DrugLookupController {
       return;
     }
 
-    this.disambiguation = {
-      suggestionId: entryId,
-      entryLabel: result.alias.name,
-      options: []
-    };
-    this.render({ suggestions: Array.from(this.resultsById.values()) });
+    await this.handleFallbackSearch(entryId);
   }
 
   private async handleDisambiguationSelection(suggestionId: string, optionIndex: number): Promise<void> {
@@ -434,7 +445,8 @@ export class DrugLookupController {
       query: this.lastQuery,
       layout: this.availability.context?.mode === 'modal-cari-obat' ? 'modal' : 'inline',
       payer: this.payerInfo.kind,
-      showPayerBadge: this.payerInfo.confidence === 'exact' && this.payerInfo.kind !== 'unknown'
+      showPayerBadge: this.payerInfo.confidence === 'exact' && this.payerInfo.kind !== 'unknown',
+      nativeMode: this.nativeMode
     };
   }
 
@@ -464,4 +476,40 @@ export class DrugLookupController {
   private getResolutionCacheKey(entryId: string): string {
     return `${this.availability.mode}:${this.payerInfo.kind}:${entryId}`;
   }
+
+  private isCatalogUsable(): boolean {
+    return catalogEntries.some((entry) => entry.aliases.length > 0);
+  }
+
+  private buildNativeFallbackResult(query: string): CatalogSearchResult {
+    const normalizedName = query.trim().toUpperCase();
+    const entry: CatalogEntry = {
+      id: `native-entry:${normalizedName}`,
+      kategori: 'Native Fallback',
+      kandungan: query,
+      sediaan: 'Native search',
+      aliases: [],
+      bpjsNames: [],
+      umumNames: [],
+      allNames: [query],
+      searchTokens: [normalizedName],
+      normalizedKandungan: normalizedName
+    };
+    const alias = {
+      id: `native-alias:${normalizedName}`,
+      parentEntryId: entry.id,
+      name: query,
+      source: 'Kandungan' as const,
+      normalizedName
+    };
+    entry.aliases = [alias];
+
+    return {
+      entry,
+      alias,
+      score: 0,
+      matchedOn: 'kandungan-token'
+    };
+  }
+
 }

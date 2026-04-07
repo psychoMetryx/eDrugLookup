@@ -245,10 +245,8 @@ function pageBridgeMain() {
       return { options: [] };
     }
 
-    await runModalSearch(context, term, searchType, syncInput);
-    return {
-      options: Array.isArray(context.vm.items) ? context.vm.items : []
-    };
+    const options = await runModalSearchWithFallback(context, term, searchType, syncInput);
+    return { options };
   }
 
   async function selectModalInventory(option: any) {
@@ -273,8 +271,23 @@ function pageBridgeMain() {
       throw new Error('Unable to prime modal search.');
     }
 
-    await runModalSearch(context, term, searchType, syncInput);
+    await runModalSearchWithFallback(context, term, searchType, syncInput);
     return { ok: true };
+  }
+
+  async function runModalSearchWithFallback(
+    context: ModalBridgeContext,
+    term: string,
+    searchType: string,
+    syncInput: boolean
+  ) {
+    await runModalSearch(context, term, searchType, syncInput);
+    let options = Array.isArray(context.vm.items) ? context.vm.items : [];
+    if (options.length === 0 && searchType !== 'nama_obat') {
+      await runModalSearch(context, term, 'nama_obat', syncInput);
+      options = Array.isArray(context.vm.items) ? context.vm.items : [];
+    }
+    return options;
   }
 
   async function runModalSearch(context: ModalBridgeContext, term: string, searchType: string, syncInput: boolean) {

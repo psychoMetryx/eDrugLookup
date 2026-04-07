@@ -29,6 +29,7 @@ export interface PanelState {
   layout: 'inline' | 'modal';
   payer: PayerKind;
   showPayerBadge: boolean;
+  nativeMode: boolean;
 }
 
 interface PanelPlacement {
@@ -54,7 +55,8 @@ export class LookupPanel {
     disambiguation: null,
     layout: 'inline',
     payer: 'unknown',
-    showPayerBadge: false
+    showPayerBadge: false,
+    nativeMode: false
   };
 
   constructor(private readonly callbacks: PanelCallbacks) {
@@ -168,6 +170,16 @@ export class LookupPanel {
         padding: 14px;
         font-size: 13px;
         line-height: 1.5;
+      }
+      .native-notice {
+        margin: 10px 12px 0;
+        padding: 8px 10px;
+        border-radius: 10px;
+        border: 1px solid #bfdbfe;
+        background: #eff6ff;
+        color: #1e3a8a;
+        font-size: 12px;
+        font-weight: 600;
       }
       .item, .disambiguation-item, .fallback-button {
         all: unset;
@@ -323,6 +335,13 @@ export class LookupPanel {
   private renderBody(): HTMLElement {
     const body = document.createElement('div');
     body.className = 'body';
+
+    if (this.state.nativeMode) {
+      const notice = document.createElement('div');
+      notice.className = 'native-notice';
+      notice.textContent = 'Katalog lokal tidak tersedia, menggunakan mode native.';
+      body.appendChild(notice);
+    }
 
     if (this.state.message) {
       const message = document.createElement('div');
