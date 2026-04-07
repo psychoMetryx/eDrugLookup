@@ -76,6 +76,17 @@ npm run dev
 
 Gunakan ini hanya bila memang butuh loop development. Karena content script dijalankan di `world: MAIN`, beberapa bagian tidak mendapat HMR penuh.
 
+## Panduan Pengguna
+
+Dokumentasi untuk user biasa tersedia di:
+
+- [Panduan instalasi untuk user biasa](./docs/install-for-users.md)
+- [Panduan update katalog dari PDF atau Excel](./docs/update-catalog-from-pdf-excel.md)
+- [Panduan smoke test setelah update](./docs/smoke-test-after-update.md)
+- [Panduan troubleshooting](./docs/troubleshooting.md)
+- [FAQ singkat](./docs/faq.md)
+- [Customize Your Drug List](./docs/customize-catalog.md)
+
 ## Alur Data
 
 1. CSV katalog diedit di [LIST OBAT 2026.csv](./LIST%20OBAT%202026.csv)
