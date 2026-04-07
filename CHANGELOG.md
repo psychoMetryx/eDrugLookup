@@ -15,7 +15,7 @@ Initial public documentation release.
 - Inventory resolver berbasis bridge ke page context atau Vue internal eClinic
 - Dokumentasi user:
   - panduan instalasi
-  - panduan update katalog dari PDF atau Excel
+  - panduan update katalog dari sumber data eksternal (PDF/Excel)
   - panduan smoke test
   - panduan troubleshooting
   - FAQ singkat

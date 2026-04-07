@@ -34,6 +34,6 @@ Isi dengan `-`.
 
 Jalankan [Panduan smoke test setelah update](./smoke-test-after-update.md).
 
-## Kalau sumber daftar obat masih PDF?
+## Kalau sumber daftar obat masih PDF atau Excel?
 
-Gunakan [Panduan update katalog dari PDF atau Excel](./update-catalog-from-pdf-excel.md).
+Gunakan [Panduan update katalog dari sumber data eksternal (PDF/Excel)](./update-catalog-from-pdf-excel.md).

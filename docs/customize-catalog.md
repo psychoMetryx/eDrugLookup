@@ -5,7 +5,7 @@ Halaman ini adalah pintu masuk cepat untuk user yang ingin memakai katalog obat 
 ## Mulai dari Sini
 
 - [Panduan instalasi untuk user biasa](./install-for-users.md)
-- [Panduan update katalog dari PDF atau Excel](./update-catalog-from-pdf-excel.md)
+- [Panduan update katalog dari sumber data eksternal (PDF/Excel)](./update-catalog-from-pdf-excel.md)
 - [Panduan smoke test setelah update](./smoke-test-after-update.md)
 - [Panduan troubleshooting](./troubleshooting.md)
 - [FAQ singkat](./faq.md)

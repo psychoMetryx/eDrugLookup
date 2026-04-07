@@ -77,6 +77,6 @@ Kalau masih gagal:
 ## Link Lanjutan
 
 - [Panduan instalasi untuk user biasa](./install-for-users.md)
-- [Panduan update katalog dari PDF atau Excel](./update-catalog-from-pdf-excel.md)
+- [Panduan update katalog dari sumber data eksternal (PDF/Excel)](./update-catalog-from-pdf-excel.md)
 - [Panduan smoke test setelah update](./smoke-test-after-update.md)
 - [FAQ singkat](./faq.md)
