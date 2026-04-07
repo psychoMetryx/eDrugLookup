@@ -1,6 +1,6 @@
-# Panduan Update Katalog dari PDF atau Excel
+# Panduan Update Katalog dari Sumber Data Eksternal (PDF/Excel)
 
-Panduan ini untuk pengguna yang ingin memakai daftar obat sendiri.
+Panduan ini untuk pengguna yang ingin memakai daftar obat sendiri tanpa bergantung pada file PDF lokal di repo.
 
 ## File yang Boleh Diedit
 
@@ -31,19 +31,19 @@ Arti kolom:
 - Jangan ubah nama header kolom.
 - Simpan tetap sebagai `.csv`.
 
-## Jika Sumber Awalnya PDF
+## Jika Sumber Data Berupa PDF
 
-1. Buka PDF daftar obat.
-2. Gunakan [LIST OBAT 2026.csv](../LIST%20OBAT%202026.csv) sebagai template.
-3. Pindahkan isi PDF ke kolom yang sesuai.
-4. Jika di PDF beberapa nama obat ditulis bertumpuk dalam satu sel, ubah menjadi format CSV dengan separator `;`.
+1. Gunakan dokumen PDF sumber (dari pihak internal/eksternal) sebagai referensi isi data.
+2. Gunakan [LIST OBAT 2026.csv](../LIST%20OBAT%202026.csv) sebagai template dan satu-satunya source of truth di repo.
+3. Pindahkan isi dari dokumen sumber ke kolom CSV yang sesuai.
+4. Jika di dokumen sumber beberapa nama obat ditulis bertumpuk dalam satu sel, ubah menjadi format CSV dengan separator `;`.
 
 Contoh:
 
-- tampilan PDF: `FENATIC 400` lalu `FARSIFEN 400`
+- tampilan dokumen sumber: `FENATIC 400` lalu `FARSIFEN 400`
 - format CSV: `FENATIC 400; FARSIFEN 400`
 
-## Jika Sumber Awalnya Excel
+## Jika Sumber Data Berupa Excel
 
 1. Pastikan kolom Excel bisa dipetakan ke:
    - `Kategori`
@@ -53,7 +53,7 @@ Contoh:
    - `Obat Umum`
 2. Rapikan alias ganda agar dipisah dengan `;`.
 3. Export atau simpan sebagai CSV.
-4. Ganti isi [LIST OBAT 2026.csv](../LIST%20OBAT%202026.csv) dengan data tersebut.
+4. Ganti isi [LIST OBAT 2026.csv](../LIST%20OBAT%202026.csv) dengan data tersebut (tetap jadikan CSV ini sebagai source of truth).
 
 ## Contoh Baris yang Benar
 

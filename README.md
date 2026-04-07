@@ -66,7 +66,7 @@ Lalu buka `chrome://extensions`, aktifkan `Developer mode`, klik `Load unpacked`
 ## Dokumentasi
 
 - [Panduan instalasi untuk user biasa](./docs/install-for-users.md)
-- [Panduan update katalog dari PDF atau Excel](./docs/update-catalog-from-pdf-excel.md)
+- [Panduan update katalog dari sumber data eksternal (PDF/Excel)](./docs/update-catalog-from-pdf-excel.md)
 - [Panduan smoke test setelah update](./docs/smoke-test-after-update.md)
 - [Panduan troubleshooting](./docs/troubleshooting.md)
 - [FAQ singkat](./docs/faq.md)
