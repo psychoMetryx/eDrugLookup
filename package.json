@@ -12,7 +12,9 @@
     "build": "tsc --noEmit && vite build",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "check:catalog-sanitization": "tsx scripts/checkCatalogSanitization.ts",
+    "precommit:catalog": "npm run check:catalog-sanitization"
   },
   "dependencies": {
     "@crxjs/vite-plugin": "^2.2.0"
