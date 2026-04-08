@@ -16,6 +16,8 @@ export interface PanelCallbacks {
   onSuggestionSelected: (suggestionId: string) => void;
   onDisambiguationSelected: (suggestionId: string, optionIndex: number) => void;
   onFallbackSearch: (suggestionId: string) => void;
+  onNoticeToggle: () => void;
+  onReadMore: () => void;
 }
 
 export interface PanelState {
@@ -30,6 +32,8 @@ export interface PanelState {
   payer: PayerKind;
   showPayerBadge: boolean;
   nativeMode: boolean;
+  showNotice: boolean;
+  noticeExpanded: boolean;
 }
 
 interface PanelPlacement {
@@ -40,6 +44,9 @@ interface PanelPlacement {
 
 const VIEWPORT_MARGIN = 16;
 const MODAL_GAP = 24;
+const NOTICE_HELPER_TEXT = 'Alat bantu pencarian obat. Tetap verifikasi sebelum simpan.';
+const NOTICE_DETAIL_TEXT =
+  'Extension ini membantu pencarian obat pada workflow resep. Hasil tetap harus diverifikasi oleh tenaga kesehatan sebelum disimpan. Gunakan sesuai otorisasi dan SOP fasilitas kesehatan.';
 
 export class LookupPanel {
   private readonly host = document.createElement('div');
@@ -56,7 +63,9 @@ export class LookupPanel {
     layout: 'inline',
     payer: 'unknown',
     showPayerBadge: false,
-    nativeMode: false
+    nativeMode: false,
+    showNotice: true,
+    noticeExpanded: false
   };
 
   constructor(private readonly callbacks: PanelCallbacks) {
@@ -113,6 +122,7 @@ export class LookupPanel {
       }
       .header-title {
         min-width: 0;
+        flex: 1 1 auto;
         font-size: 12px;
         text-transform: uppercase;
         letter-spacing: 0.08em;
@@ -120,6 +130,12 @@ export class LookupPanel {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+      }
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: none;
       }
       .header-badge {
         flex: none;
@@ -141,12 +157,95 @@ export class LookupPanel {
         background: #e8f0ff;
         border-color: #bfd3ff;
       }
+      .header-info {
+        all: unset;
+        box-sizing: border-box;
+        flex: none;
+        cursor: pointer;
+        padding: 4px 7px;
+        border-radius: 999px;
+        border: 1px solid rgba(13, 31, 54, 0.12);
+        background: #fff;
+        color: #445064;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      .header-info:hover {
+        background: #f4f7fb;
+      }
+      .header-info[data-expanded="true"] {
+        background: #eef6ff;
+        color: #0f3b5f;
+        border-color: rgba(29, 78, 216, 0.22);
+      }
       .body {
         overflow: auto;
         max-height: min(62vh, 500px);
       }
       .panel[data-layout="modal"] .body {
         max-height: min(30vh, 210px);
+      }
+      .notice {
+        padding: 10px 14px 0;
+        background: linear-gradient(180deg, rgba(247, 239, 228, 0.52), rgba(255, 255, 255, 0));
+      }
+      .panel[data-layout="modal"] .notice {
+        padding: 8px 15px 0;
+      }
+      .panel[data-layout="inline"] .notice {
+        padding: 8px 12px 0;
+      }
+      .notice-helper {
+        font-size: 11.5px;
+        line-height: 1.45;
+        color: #5a6678;
+      }
+      .panel[data-layout="inline"] .notice-helper {
+        font-size: 11px;
+        line-height: 1.4;
+      }
+      .panel[data-layout="modal"] .notice-helper {
+        font-size: 11px;
+      }
+      .notice-detail {
+        margin-top: 8px;
+        padding: 9px 10px;
+        border: 1px solid rgba(13, 31, 54, 0.08);
+        border-radius: 10px;
+        background: #fffaf2;
+        color: #445064;
+        font-size: 11.5px;
+        line-height: 1.5;
+      }
+      .panel[data-layout="modal"] .notice-detail {
+        margin-top: 6px;
+        padding: 8px 9px;
+        font-size: 11px;
+      }
+      .notice-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 7px;
+        padding-bottom: 8px;
+      }
+      .panel[data-layout="inline"] .notice-actions {
+        padding-bottom: 6px;
+      }
+      .notice-link {
+        all: unset;
+        box-sizing: border-box;
+        cursor: pointer;
+        color: #0f5aa3;
+        font-size: 11px;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+      .notice-link:hover {
+        color: #0a447b;
+        text-decoration: underline;
       }
       .panel[data-layout="modal"] .item {
         padding: 13px 15px;
@@ -300,15 +399,29 @@ export class LookupPanel {
       return;
     }
 
-    const placement =
+    const initialPlacement =
       state.layout === 'modal'
         ? computeModalPlacement(state.anchorRect, window.innerWidth, window.innerHeight)
         : computeInlinePlacement(state.anchorRect, window.innerWidth, window.innerHeight);
 
-    this.container.style.top = `${placement.top}px`;
-    this.container.style.left = `${placement.left}px`;
-    this.container.style.width = `${placement.width}px`;
+    this.container.style.left = `${initialPlacement.left}px`;
+    this.container.style.width = `${initialPlacement.width}px`;
+    this.container.style.top = `${initialPlacement.top}px`;
     this.container.replaceChildren(this.renderHeader(), this.renderBody());
+
+    const finalPlacement =
+      state.layout === 'modal'
+        ? initialPlacement
+        : computeInlinePlacement(
+            state.anchorRect,
+            window.innerWidth,
+            window.innerHeight,
+            Math.ceil(this.container.getBoundingClientRect().height)
+          );
+
+    this.container.style.top = `${finalPlacement.top}px`;
+    this.container.style.left = `${finalPlacement.left}px`;
+    this.container.style.width = `${finalPlacement.width}px`;
   }
 
   private renderHeader(): HTMLElement {
@@ -320,15 +433,30 @@ export class LookupPanel {
     title.textContent = this.state.query ? `eDrugLookup - ${this.state.query}` : 'eDrugLookup';
     header.appendChild(title);
 
+    const actions = document.createElement('div');
+    actions.className = 'header-actions';
+
+    const infoButton = document.createElement('button');
+    infoButton.type = 'button';
+    infoButton.className = 'header-info';
+    infoButton.dataset.expanded = String(this.state.noticeExpanded);
+    infoButton.title = this.state.noticeExpanded ? 'Hide legal notice' : 'Show legal notice';
+    infoButton.setAttribute('aria-label', infoButton.title);
+    infoButton.textContent = 'Info';
+    infoButton.addEventListener('mousedown', (event) => event.preventDefault());
+    infoButton.addEventListener('click', () => this.callbacks.onNoticeToggle());
+    actions.appendChild(infoButton);
+
     const payerTone = getPillTone(this.state.payer);
     if (this.state.showPayerBadge && payerTone !== 'neutral') {
       const badge = document.createElement('div');
       badge.className = 'header-badge';
       badge.dataset.tone = payerTone;
       badge.textContent = `${formatPayer(this.state.payer)} priority`;
-      header.appendChild(badge);
+      actions.appendChild(badge);
     }
 
+    header.appendChild(actions);
     return header;
   }
 
@@ -341,6 +469,10 @@ export class LookupPanel {
       notice.className = 'native-notice';
       notice.textContent = 'Katalog lokal tidak tersedia, menggunakan mode native.';
       body.appendChild(notice);
+    }
+
+    if (this.state.showNotice) {
+      body.appendChild(this.renderNotice());
     }
 
     if (this.state.message) {
@@ -360,6 +492,37 @@ export class LookupPanel {
     }
 
     return body;
+  }
+
+  private renderNotice(): HTMLElement {
+    const notice = document.createElement('div');
+    notice.className = 'notice';
+
+    const helper = document.createElement('div');
+    helper.className = 'notice-helper';
+    helper.textContent = NOTICE_HELPER_TEXT;
+    notice.appendChild(helper);
+
+    if (this.state.noticeExpanded) {
+      const detail = document.createElement('div');
+      detail.className = 'notice-detail';
+      detail.textContent = NOTICE_DETAIL_TEXT;
+      notice.appendChild(detail);
+    }
+
+    const actions = document.createElement('div');
+    actions.className = 'notice-actions';
+
+    const readMore = document.createElement('button');
+    readMore.type = 'button';
+    readMore.className = 'notice-link';
+    readMore.textContent = 'Read more';
+    readMore.addEventListener('mousedown', (event) => event.preventDefault());
+    readMore.addEventListener('click', () => this.callbacks.onReadMore());
+    actions.appendChild(readMore);
+
+    notice.appendChild(actions);
+    return notice;
   }
 
   private renderSuggestion(suggestion: SuggestionViewModel, index: number): HTMLElement {
@@ -444,10 +607,17 @@ export function computeModalPlacement(anchorRect: DOMRect, viewportWidth: number
   };
 }
 
-export function computeInlinePlacement(anchorRect: DOMRect, viewportWidth: number, viewportHeight: number): PanelPlacement {
+export function computeInlinePlacement(
+  anchorRect: DOMRect,
+  viewportWidth: number,
+  viewportHeight: number,
+  panelHeight = 0
+): PanelPlacement {
   const width = Math.min(Math.max(240, viewportWidth - 24), Math.min(520, Math.max(320, anchorRect.width)));
+  const preferredTop = anchorRect.bottom + 8;
+  const maxTop = Math.max(12, viewportHeight - panelHeight - 12);
   return {
-    top: Math.min(viewportHeight - MODAL_GAP, anchorRect.bottom + 8),
+    top: clamp(Math.min(preferredTop, maxTop), 12, Math.max(12, viewportHeight - MODAL_GAP)),
     left: Math.max(12, Math.min(anchorRect.left, viewportWidth - width - 12)),
     width
   };

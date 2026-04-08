@@ -12,6 +12,11 @@ export default defineManifest({
       js: ['src/content/index.ts'],
       run_at: 'document_idle',
       world: 'MAIN'
+    },
+    {
+      matches: ['https://emr.eclinic.id/pemeriksaanmedis/show/*'],
+      js: ['src/content/helpLauncherEntry.ts'],
+      run_at: 'document_idle'
     }
   ]
 });

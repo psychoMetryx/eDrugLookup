@@ -11,6 +11,7 @@ import type {
 } from '../lib/catalog/types';
 import { PageBridgeClient } from './bridgeClient';
 import { injectPageBridge } from './pageBridge';
+import { dispatchOpenHelpPageEvent } from './helpPage';
 import { inferPatientPayerInfo } from './payer';
 import { getLookupAvailability, isLookupKeyboardTarget, type LookupAvailability, type LookupContext } from './pageState';
 import { LookupPanel, type DisambiguationModel, type PanelState, type SuggestionViewModel } from './ui';
@@ -44,6 +45,7 @@ export class DrugLookupController {
   private queryVersion = 0;
   private payerInfo: PayerInference = inferPatientPayerInfo();
   private nativeMode = false;
+  private noticeExpanded = false;
 
   constructor(dependencies: ControllerDependencies = {}) {
     this.bridge = dependencies.bridge ?? new PageBridgeClient();
@@ -57,6 +59,13 @@ export class DrugLookupController {
       },
       onFallbackSearch: (entryId) => {
         void this.handleFallbackSearch(entryId);
+      },
+      onNoticeToggle: () => {
+        this.noticeExpanded = !this.noticeExpanded;
+        this.render({});
+      },
+      onReadMore: () => {
+        dispatchOpenHelpPageEvent();
       }
     });
   }
@@ -68,6 +77,9 @@ export class DrugLookupController {
       const nextAvailability = getLookupAvailability();
       const nextPayer = inferPatientPayerInfo();
       if (this.hasContextChanged(nextAvailability) || nextPayer.kind !== this.payerInfo.kind || nextPayer.rawValue !== this.payerInfo.rawValue) {
+        if (this.hasContextChanged(nextAvailability)) {
+          this.noticeExpanded = false;
+        }
         this.availability = nextAvailability;
         this.payerInfo = nextPayer;
         this.bindCurrentContext();
@@ -404,6 +416,7 @@ export class DrugLookupController {
   private closePanel(): void {
     this.isPanelOpen = false;
     this.disambiguation = null;
+    this.noticeExpanded = false;
     this.panel.render({
       ...this.getBasePanelState(),
       open: false,
@@ -446,7 +459,9 @@ export class DrugLookupController {
       layout: this.availability.context?.mode === 'modal-cari-obat' ? 'modal' : 'inline',
       payer: this.payerInfo.kind,
       showPayerBadge: this.payerInfo.confidence === 'exact' && this.payerInfo.kind !== 'unknown',
-      nativeMode: this.nativeMode
+      nativeMode: this.nativeMode,
+      showNotice: true,
+      noticeExpanded: this.noticeExpanded
     };
   }
 

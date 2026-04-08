@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>eDrugLookup - Info Penggunaan</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f4efe7;
+        --panel: #fffdfa;
+        --panel-strong: #fff7ec;
+        --text: #1b2433;
+        --muted: #556173;
+        --line: rgba(17, 35, 58, 0.1);
+        --accent: #0f5aa3;
+        --accent-soft: #eaf3ff;
+        --danger-soft: #fde8e8;
+        --danger-text: #9b1c1c;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(255, 255, 255, 0.8), transparent 36%),
+          linear-gradient(180deg, #efe7da 0%, var(--bg) 100%);
+        color: var(--text);
+      }
+
+      main {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 36px 20px 56px;
+      }
+
+      .hero {
+        padding: 24px 24px 20px;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        background: linear-gradient(135deg, #fff7ec, #ffffff 58%);
+        box-shadow: 0 20px 48px rgba(17, 35, 58, 0.12);
+      }
+
+      .eyebrow {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 14px 0 10px;
+        font-size: clamp(28px, 4vw, 42px);
+        line-height: 1.08;
+      }
+
+      .lead {
+        margin: 0;
+        max-width: 62ch;
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.65;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 14px;
+        margin-top: 18px;
+      }
+
+      .card,
+      .notice {
+        margin-top: 18px;
+        padding: 18px 18px 16px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: var(--panel);
+      }
+
+      .notice {
+        background: linear-gradient(180deg, #fff6ea, var(--panel));
+      }
+
+      .warning {
+        border-color: rgba(163, 32, 32, 0.16);
+        background: linear-gradient(180deg, var(--danger-soft), #fffdfa);
+      }
+
+      h2 {
+        margin: 0 0 10px;
+        font-size: 18px;
+      }
+
+      p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.65;
+      }
+
+      ul {
+        margin: 10px 0 0;
+        padding-left: 18px;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      li + li {
+        margin-top: 6px;
+      }
+
+      .notice strong,
+      .warning strong {
+        color: var(--text);
+      }
+
+      .warning strong {
+        color: var(--danger-text);
+      }
+
+      footer {
+        margin-top: 20px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      @media (max-width: 640px) {
+        main {
+          padding: 22px 14px 36px;
+        }
+
+        .hero,
+        .card,
+        .notice {
+          padding: 16px;
+          border-radius: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="hero">
+        <div class="eyebrow">eDrugLookup</div>
+        <h1>Informasi penggunaan dan penanganan data</h1>
+        <p class="lead">
+          eDrugLookup adalah alat bantu pencarian obat untuk workflow resep di eClinic. Hasil pencarian tetap harus
+          diverifikasi oleh tenaga kesehatan sebelum tindakan atau resep disimpan.
+        </p>
+      </section>
+
+      <section class="notice warning">
+        <h2>Ringkasan penting</h2>
+        <p>
+          <strong>Extension ini tidak menggantikan penilaian klinis.</strong> Pengguna wajib memverifikasi pasien,
+          nama obat, sediaan, dosis, dan instruksi penggunaan sebelum melanjutkan.
+        </p>
+      </section>
+
+      <div class="grid">
+        <section class="card">
+          <h2>Tujuan extension</h2>
+          <p>
+            Membantu pencarian kandidat obat di area resep, terutama pada konteks Non Racik dan modal Cari Obat, tanpa
+            mengambil alih keputusan akhir dari pengguna.
+          </p>
+        </section>
+
+        <section class="card">
+          <h2>Batas fungsi</h2>
+          <ul>
+            <li>Extension membantu lookup dan suggestion, bukan keputusan medis.</li>
+            <li>Extension tidak ditujukan untuk submit resep secara otomatis.</li>
+            <li>Extension tidak dimaksudkan menggantikan verifikasi manual oleh tenaga kesehatan.</li>
+          </ul>
+        </section>
+      </div>
+
+      <section class="notice">
+        <h2>Penanganan data</h2>
+        <ul>
+          <li>Extension dapat membaca data yang tampil pada halaman EMR untuk kebutuhan konteks pencarian.</li>
+          <li>Data dipakai untuk mendukung fungsi operasional extension pada halaman yang sedang dibuka.</li>
+          <li>Penggunaan extension harus mengikuti otorisasi, SOP fasilitas kesehatan, dan kebijakan sistem yang berlaku.</li>
+          <li>Hanya pengguna yang berwenang yang boleh menggunakan extension ini pada data pasien.</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Catatan perilaku sistem</h2>
+        <ul>
+          <li>Extension dirancang untuk tetap native-first pada workflow resep eClinic.</li>
+          <li>Extension tidak men-trigger tombol Tambahkan Obat secara otomatis.</li>
+          <li>Extension tidak men-trigger tombol Simpan secara otomatis.</li>
+          <li>Extension tidak boleh digunakan untuk menghindari proses verifikasi internal fasilitas kesehatan.</li>
+        </ul>
+      </section>
+
+      <footer>
+        Gunakan extension ini secara hati-hati dan sesuai kebijakan internal fasilitas kesehatan.
+      </footer>
+    </main>
+  </body>
+</html>
